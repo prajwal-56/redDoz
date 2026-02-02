@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadHistory();
     };
 
-    const performSearch = () => {
+    const performSearch = (redirectCurrentTab = false) => {
         const username = usernameInput.value;
         const query = getFinalQuery(username);
         
@@ -64,7 +64,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         addToHistory(username.trim().replace(/^u\//, ''));
         const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-        window.open(url, '_blank');
+        
+        if (redirectCurrentTab === true) {
+            window.location.href = url;
+        } else {
+            window.open(url, '_blank');
+        }
     };
 
     const copyToClipboard = () => {
@@ -76,9 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-        navigator.clipboard.writeText(url).then(() => {
-            showFeedback('Link copied to clipboard!', 'success');
+        // To create a sharable Reddox link instead of a Google link:
+        const url = new URL(window.location.href);
+        const shareableUrl = `${url.origin}/${encodeURIComponent(username.trim().replace(/^u\//, ''))}`;
+
+        navigator.clipboard.writeText(shareableUrl).then(() => {
+            showFeedback('Reddox link copied to clipboard!', 'success');
+        }).catch(() => {
+            // Fallback for older browsers
+            showFeedback('Failed to copy link', 'error');
         });
     };
 
@@ -100,4 +111,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial load
     loadHistory();
+
+    // Auto-search logic from URL (e.g. reddox.in/0xCynic)
+    const path = window.location.pathname.replace(/^\/+/, '');
+    const searchParams = new URLSearchParams(window.location.search);
+    const hash = window.location.hash.replace(/^#/, '');
+
+    let autoSearchUser = '';
+    
+    // Priority: Pathname > Query Param > Hash
+    // Ignore common paths like index.html
+    if (path && !path.includes('.html') && path !== '/') {
+        autoSearchUser = path;
+    } else if (searchParams.has('u')) {
+        autoSearchUser = searchParams.get('u');
+    } else if (hash) {
+        autoSearchUser = hash;
+    }
+
+    if (autoSearchUser) {
+        usernameInput.value = decodeURIComponent(autoSearchUser);
+        // Automatically perform search
+        setTimeout(() => {
+            performSearch(true);
+        }, 100);
+    }
 });

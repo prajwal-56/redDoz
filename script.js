@@ -1,15 +1,18 @@
-let foo = document.getElementById("redditUsername").value
-
-
 console.log("hi mom!")
-console.log("The user wants to find posts and comments from the user "+ foo)
 
 function generate_link(){
-    let foo = document.getElementById("redditUsername").value
+    let reddit_username = document.getElementById("redditUsername").value
 
-    console.log("here " + foo)
+    console.log("here " + reddit_username)
 
-    const prefix = "site:reddit.com"
+    const prefix = `site:reddit.com `
 
-    // const thatUrl = 
+    const thatUrl = encodeURIComponent(prefix + reddit_username)
+    
+    const finalUrl = `https://www.google.com/search?q=${thatUrl}`
+    console.log("url : " +thatUrl )
+
+    let theArea = document.getElementById('link_generatin_Area')
+
+    theArea.innerHTML = `<a href="${finalUrl}"> <button > find </button> </a>`
 }

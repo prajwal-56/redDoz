@@ -1,12 +1,24 @@
 // Reddox Core Logic
 document.addEventListener('DOMContentLoaded', () => {
     const usernameInput = document.getElementById('redditUsername');
+    const subredditInput = document.getElementById('subredditInput');
     const searchBtn = document.getElementById('searchBtn');
     const copyBtn = document.getElementById('copyBtn');
-    const optionChips = document.querySelectorAll('.option-chip');
+    const optionChips = document.querySelectorAll('.search-options:not(.time-filters) .option-chip');
+    const timeChips = document.querySelectorAll('.time-filters .option-chip');
     const resultArea = document.getElementById('result-area');
 
     let currentMode = 'all';
+    let currentTime = 'any';
+
+    // Toggle time modes
+    timeChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            timeChips.forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            currentTime = chip.dataset.time;
+        });
+    });
 
     // Toggle search modes
     optionChips.forEach(chip => {
@@ -22,16 +34,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const cleanUser = username.trim().replace(/^u\//, '');
         if (!cleanUser) return null;
 
+        // Clean subreddit
+        let sub = subredditInput.value.trim().replace(/^r\//, '');
+        let siteModifier = sub ? `site:reddit.com/r/${sub}` : `site:reddit.com`;
+        
+        if (!sub && (currentMode === 'posts' || currentMode === 'comments')) {
+            siteModifier = `site:reddit.com/r/*`;
+        }
+
         let query = '';
         switch(currentMode) {
             case 'posts':
-                query = `site:reddit.com/r/* "submitted by ${cleanUser}"`;
+                query = `${siteModifier} "submitted by ${cleanUser}"`;
                 break;
             case 'comments':
-                query = `site:reddit.com/r/* "${cleanUser}"`;
+                query = `${siteModifier} "${cleanUser}"`;
                 break;
             default:
-                query = `site:reddit.com "${cleanUser}"`;
+                query = `${siteModifier} "${cleanUser}"`;
         }
         return query;
     };
@@ -63,7 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         addToHistory(username.trim().replace(/^u\//, ''));
-        const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        let url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        
+        if (currentTime !== 'any') {
+            url += `&tbs=${currentTime}`;
+        }
         
         if (redirectCurrentTab === true) {
             window.location.href = url;

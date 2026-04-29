@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Reddox: A precision tool for finding specific Reddit users across the web.">
-    <title>Reddox | Advanced Reddit Search</title>
+    <title>Reddox </title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,7 +12,7 @@
     <main class="container">
         <header>
             <h1>Reddox</h1>
-            <h2>Precision search for Reddit users. Find the digital footprint of any username.</h2>
+            <h2>Wanna stalk someone on reddit , but their posts are hidden from profile ? enter their username and hit search</h2>
         </header>
         
         <div class="search-card">
@@ -20,16 +20,28 @@
                 <input type="text" id="redditUsername" placeholder="Reddit Username (e.g. u/spez)..." autocomplete="off">
             </div>
 
-            <div class="search-options">
+            <div class="input-wrapper" style="margin-top: -5px;">
+                <input type="text" id="subredditInput" placeholder="Optional: Subreddit (e.g. privacy)..." autocomplete="off">
+            </div>
+
+            <div class="search-options" style="margin-bottom: -5px;">
                 <span class="option-chip active" id="opt-all">All</span>
                 <span class="option-chip" id="opt-posts">Posts</span>
                 <span class="option-chip" id="opt-comments">Comments</span>
             </div>
 
+            <div class="search-options time-filters">
+                <span class="option-chip active" data-time="any">Any Time</span>
+                <span class="option-chip" data-time="qdr:d">24h</span>
+                <span class="option-chip" data-time="qdr:w">Week</span>
+                <span class="option-chip" data-time="qdr:m">Month</span>
+                <span class="option-chip" data-time="qdr:y">Year</span>
+            </div>
+
             <div class="button-group">
                 <button id="searchBtn" class="btn-primary">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    Search Google
+                    Search
                 </button>
                 <button id="copyBtn" class="btn-secondary">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
@@ -51,7 +63,7 @@
         </div>
 
         <footer style="margin-top: 2rem; font-size: 0.8rem; color: var(--text-secondary);">
-            <p>Searches are performed via Google using dorking techniques.</p>
+            <p>Searches are performed via <a href="https://www.recordedfuture.com/threat-intelligence-101/threat-analysis-techniques/google-dorks" target="_blank" style="color:#FF4500;">Google dorking</a>.</p>
         </footer>
     </main>
 

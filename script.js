@@ -136,17 +136,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial load
     loadHistory();
 
-    // Auto-search logic from URL (e.g. reddox.in/0xCynic)
-    const path = window.location.pathname.replace(/^\/+/, '');
+    // Auto-search logic from URL (e.g. reddox.in/0xCynic or prajwal-56.github.io/redDoz/0xCynic)
+    // Derive the base path (the directory serving this page) so the repo name on
+    // GitHub Pages (e.g. /redDoz/) is never mistaken for a username.
+    const basePath = window.location.pathname.replace(/[^/]*$/, ''); // e.g. '/redDoz/' or '/'
+    const relativePath = window.location.pathname
+        .slice(basePath.length)          // strip the base directory prefix
+        .replace(/^\/+|\/+$/g, '');    // strip any remaining leading/trailing slashes
+
     const searchParams = new URLSearchParams(window.location.search);
     const hash = window.location.hash.replace(/^#/, '');
 
     let autoSearchUser = '';
-    
+
     // Priority: Pathname > Query Param > Hash
     // Ignore common paths like index.html
-    if (path && !path.includes('.html') && path !== '/') {
-        autoSearchUser = path;
+    if (relativePath && !relativePath.includes('.html')) {
+        autoSearchUser = relativePath;
     } else if (searchParams.has('u')) {
         autoSearchUser = searchParams.get('u');
     } else if (hash) {

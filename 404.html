@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reddox</title>
+    <script>
+        /**
+         * GitHub Pages SPA redirect shim.
+         *
+         * GitHub Pages serves a 404 for any path that isn't a real file.
+         * This page captures the intended URL, extracts the username segment
+         * (everything after the base path, e.g. /redDoz/), and redirects to
+         * index.html with the username as the `?u=` query param — which the
+         * existing auto-search logic already handles.
+         *
+         * e.g.  /redDoz/spez  →  /redDoz/?u=spez  →  auto-searches "spez"
+         */
+        (function () {
+            var pathname = window.location.pathname;
+
+            // Derive the base path: the first two segments, e.g. /redDoz/
+            // On a custom domain at root, this would just be /
+            var parts = pathname.split('/');          // ['', 'redDoz', 'spez']
+            var basePath = '/' + parts[1] + '/';     // '/redDoz/'
+
+            // The username is everything after the base path, stripped of slashes
+            var relativePath = parts.slice(2).join('/').replace(/^\/+|\/+$/g, '');
+
+            var dest = basePath;
+            if (relativePath && relativePath.indexOf('.html') === -1) {
+                dest += '?u=' + encodeURIComponent(relativePath);
+            }
+
+            window.location.replace(dest);
+        })();
+    </script>
+</head>
+<body></body>
+</html>

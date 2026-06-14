@@ -105,9 +105,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // To create a sharable Reddox link instead of a Google link:
-        const url = new URL(window.location.href);
-        const shareableUrl = `${url.origin}/${encodeURIComponent(username.trim().replace(/^u\//, ''))}`;
+        // Build a shareable Reddox deep-link using the current base path
+        // so it works on both GitHub Pages (/redDoz/) and custom domains (/).
+        const basePath = window.location.pathname.replace(/[^/]*$/, '');
+        const cleanUser = encodeURIComponent(username.trim().replace(/^u\//, ''));
+        const shareableUrl = `${window.location.origin}${basePath}${cleanUser}`;
 
         navigator.clipboard.writeText(shareableUrl).then(() => {
             showFeedback('Reddox link copied to clipboard!', 'success');
